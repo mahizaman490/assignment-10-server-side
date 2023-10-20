@@ -36,6 +36,8 @@ async function run() {
       app.post('/product',async(req,res)=>{
         const newProduct = req.body;
         console.log(newProduct)
+        const result = await productCollection.insertOne(newProduct);
+        res.send(result);
       })
     const database = client.db("technologyDB");
     const productCollection = database.collection("products");
