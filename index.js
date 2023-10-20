@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 //middleware
@@ -32,7 +32,20 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    const collectionProduct = client.db('productDB').collection('product')
+    const collectionProduct = client.db('technologyDB').collection('products') 
+    const  cartProductsCollection = client.db('technologyDB').collection(' cartProducts') 
+    app.get('/product', async(req,res) =>{
+      const cursor = collectionProduct.find();
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    app.post('/cart',async(req,res)=>{
+      const  cartProducts = req.body;
+      console.log( cartProducts)
+      const result = await  cartProductsCollection.insertOne( cartProducts)
+      res.send(result)
+    })
       app.post('/product',async(req,res)=>{
         const newProduct = req.body;
         console.log(newProduct)
@@ -56,6 +69,18 @@ async function run() {
  console.log(query)
   }) 
     
+
+  app.get('/products/:id', async (req,res) =>{
+    const id = req.params.id
+    const query = {_id: new ObjectId(id)}
+    const result = await productCollection.findOne(query)
+  res.send(result)
+  })
+
+
+
+
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
