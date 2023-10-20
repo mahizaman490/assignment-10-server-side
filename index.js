@@ -9,17 +9,16 @@ app.use(cors());
 app.use(express.json());
 
 
-
-// technologyMaster
-// EthmKQJQvRp7RS0b
+// 
 
 console.log(process.env.DB_USER)
 console.log(process.env.DB_PASS)
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hjgellj.mongodb.net/?retryWrites=true&w=majority`;
 
-console.log(uri);
+
+const uri = "mongodb+srv://mahizaman490:FdvIKhzgE6hQQb67@cluster0.1nwwv7k.mongodb.net/?retryWrites=true&w=majority";
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -33,7 +32,18 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
+
+    const database = client.db("technologyDB");
+    const productCollection = database.collection("products");
+    const mobile = {
+      name:'iphone',
+      price:"333"
+    }
+  
+      const result = await productCollection.insertOne(mobile)
+
+      console.log(result)
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
@@ -41,6 +51,9 @@ async function run() {
     // await client.close();
   }
 }
+run().catch(console.dir);
+
+
 run().catch(console.dir);
 
 
