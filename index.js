@@ -35,15 +35,21 @@ async function run() {
 
     const database = client.db("technologyDB");
     const productCollection = database.collection("products");
-    const mobile = {
-      name:'iphone',
-      price:"333"
-    }
-  
-      const result = await productCollection.insertOne(mobile)
+    
+  app.get('/product/:brand',async (req,res) =>{
+ const brand = req.params.brand
+ const query = {
+  brand:brand
 
-      console.log(result)
+ }
 
+ const result = await productCollection.find(query).toArray()
+ res.send(result)
+ console.log(result)
+ console.log(brand)
+ console.log(query)
+  }) 
+    
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
