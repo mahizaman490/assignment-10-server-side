@@ -31,7 +31,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const collectionProduct = client.db('technologyDB').collection('products') 
     const  cartProductsCollection = client.db('technologyDB').collection(' cartProducts') 
     app.get('/product', async(req,res) =>{
@@ -51,6 +51,28 @@ async function run() {
         console.log(newProduct)
         const result = await productCollection.insertOne(newProduct);
         res.send(result);
+      })
+
+      app.put('/product/:id', async(req,res) =>{
+        const id = req.params.id;
+        const filter = {_id: new ObjectId(id)}
+        const options = {upsert: true }; 
+        const updateProduct = req.body;
+        const product = {
+          $set: {
+            name:updateProduct.name,
+            brand:updateProduct.brand,
+            description:updateProduct.description,
+            product_img:updateProduct.product_img,
+            price:updateProduct.price,
+            type:updateProduct.type,
+            rating:updateProduct.rating
+          }
+      
+        }
+      
+        const result = await productCollection.updateOne(filter, product,options);
+        res.send(result)
       })
     const database = client.db("technologyDB");
     const productCollection = database.collection("products");
@@ -102,3 +124,5 @@ app.get('/',(req,res) =>{
 app.listen(port,() => {
     console.log(`Technology Server is running on port:${port}`)
 })
+
+
