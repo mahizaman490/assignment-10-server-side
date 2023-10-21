@@ -34,7 +34,7 @@ async function run() {
     // await client.connect();
     const collectionProduct = client.db('technologyDB').collection('products') 
     const  cartProductsCollection = client.db('technologyDB').collection(' cartProducts') 
-    app.get('/product', async(req,res) =>{
+    app.get('/product', async(req,res)=>{
       const cursor = collectionProduct.find();
       const result = await cursor.toArray();
       res.send(result)
@@ -91,6 +91,13 @@ async function run() {
  console.log(query)
   }) 
     
+  app.delete('/cartData/:id',async(req,res)=>{
+    const id = req.params.id
+    const query= {_id:new ObjectId(id)}
+    const result = await cartProductsCollection.deleteOne(query) 
+    res.send.(result)
+    
+  })
 
   app.get('/products/:id', async (req,res) =>{
     const id = req.params.id
@@ -99,11 +106,16 @@ async function run() {
   res.send(result)
   })
 
+app.get('/cartData/:email' , async (req,res)=>{
+  const email = req.params.email;
+  const query = {email:email}
+  const result = await cartProductsCollection.find(query).toArray()
+  res.send(result)
+})
 
 
 
-
-    await client.db("admin").command({ ping: 1 });
+    await client.db("admin").command({ping:1});
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
